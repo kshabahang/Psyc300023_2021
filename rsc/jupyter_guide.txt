@@ -1,0 +1,132 @@
+On Debian:
+Lines starting with "#" are comments
+__________
+
+#first install jupyterlab using pip3 (Python3 package manager)
+sudo pip3 install --upgrade jupyterlab
+
+#if you get an error message complaining about the pyzmq package, run the following:
+sudo pip3 install --ignore-installed pyzmq 
+
+#then try again
+sudo pip3 install --upgrade jupyterlab
+
+#if you don't have R installed, run the following 
+sudo apt-get install r-base
+
+#now install the R kernel from R (you use the "sudo" command to open R with root permissions)
+sudo R
+#after you type "R", you'll evoke the R interpreter
+#Type the following two lines inside the R interpreter to install the R kernel and make it visible to jupyter
+install.packages('IRkernel')
+IRkernel::installspec(user = FALSE)
+
+#exit R and back into your general command-line environment
+quit()
+
+
+#at this point you should be able to open a jupyter notebook by typing:
+
+jupyter notebook
+
+#if you get a an error saying you don't have permission to open a file, like the following:
+
+PermissionError: [Errno 13] Permission denied: '/home/hal9000/.local/share/jupyter/runtime'
+
+#you'll have to change the ownership of that directory (it will be a different directory for you)
+
+sudo chown -R hal9000:hal9000 ~/.local/share/jupyter/
+
+#note that hal9000 is the user on my current machine but it will be different for you, as will be the directory 
+
+##see https://jupyter.readthedocs.io/en/latest/install/kernels.html#how-do-i-install-other-languages-like-r-or-julia
+##and https://irkernel.github.io/installation/
+
+#now we have to install the nbgrader extensions
+
+
+#you need to install the nbgrader extensions
+sudo pip3 install --upgrade nbgrader
+
+#type the following three commands to make the nbgrader extensions visible to jupyter
+sudo jupyter nbextension install --sys-prefix --py nbgrader --overwrite
+sudo jupyter nbextension enable --sys-prefix --py nbgrader
+sudo jupyter serverextension enable --sys-prefix --py nbgrader
+
+## see https://nbgrader.readthedocs.io/en/stable/user_guide/installation.html
+
+#Toubleshooting
+#run the following for some diagnostics
+jupyter serverextension list
+
+-----------output----------------
+config dir: /home/kevin/.jupyter
+    jupyter_nbextensions_configurator  enabled 
+    - Validating...
+Error loading server extension jupyter_nbextensions_configurator
+      X is jupyter_nbextensions_configurator importable?
+config dir: /usr/etc/jupyter
+    nbgrader.server_extensions.formgrader  enabled 
+    - Validating...
+      nbgrader.server_extensions.formgrader  OK
+    nbgrader.server_extensions.validate_assignment  enabled 
+    - Validating...
+      nbgrader.server_extensions.validate_assignment  OK
+    nbgrader.server_extensions.assignment_list  enabled 
+    - Validating...
+      nbgrader.server_extensions.assignment_list  OK
+    nbgrader.server_extensions.course_list  enabled 
+    - Validating...
+      nbgrader.server_extensions.course_list  OK
+config dir: /usr/local/etc/jupyter
+    ipyparallel.nbextension  enabled 
+    - Validating...
+Error loading server extension ipyparallel.nbextension
+      X is ipyparallel.nbextension importable?
+    jupyterlab  enabled 
+    - Validating...
+      jupyterlab 3.1.1 OK
+--------------------------------------
+
+#looks like we got a few issues to resolve first
+#let's start with "Error loading server extension jupyter_nbextensions_configurator"
+#the problem is resolved by installing the following package using pip3
+
+sudo pip3 install jupyter_contrib_nbextensions
+
+#also install the following to resolve the other issue
+sudo pip3 install ipyparallel
+
+jupyter serverextension list
+--------output----------------
+config dir: /home/kevin/.jupyter
+    jupyter_nbextensions_configurator  enabled 
+    - Validating...
+      jupyter_nbextensions_configurator 0.4.1 OK
+config dir: /usr/etc/jupyter
+    nbgrader.server_extensions.formgrader  enabled 
+    - Validating...
+      nbgrader.server_extensions.formgrader  OK
+    nbgrader.server_extensions.validate_assignment  enabled 
+    - Validating...
+      nbgrader.server_extensions.validate_assignment  OK
+    nbgrader.server_extensions.assignment_list  enabled 
+    - Validating...
+      nbgrader.server_extensions.assignment_list  OK
+    nbgrader.server_extensions.course_list  enabled 
+    - Validating...
+      nbgrader.server_extensions.course_list  OK
+config dir: /usr/local/etc/jupyter
+    ipyparallel.nbextension  enabled 
+    - Validating...
+      ipyparallel.nbextension  OK
+    jupyterlab  enabled 
+    - Validating...
+      jupyterlab 3.1.1 OK
+---------------------------------------
+
+
+
+
+
+
